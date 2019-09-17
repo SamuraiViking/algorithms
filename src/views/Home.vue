@@ -8,15 +8,15 @@
       v-model="numOfColumns"
       @input="changeWidthOfColumns()"
       >
-      <!-- @change="changeWidthOfColumns()" -->
     </range-slider>
     <div>
-      {{ numOfColumns }}
+      Num of Columns: {{ numOfColumns }}
     </div>
+    <button @click="createColumns()">Create New Columns</button>
     <div class="row">
       <div class="row-container">
         <div v-for="column in columns">
-          <div class="column" :style="divDimensions(widthOfColumns, column.length)">
+          <div class="column" :style="divDimensions(widthOfColumns, column)">
           </div>
         </div>
       </div>
@@ -36,9 +36,7 @@ export default {
     RangeSlider
   },
   created() {
-    for(var i = 0; i < this.numOfColumns; i++) {
-      this.columns.push({ length: this.randomNumberBetween(0, 800) })
-    }
+    this.createColumns()
   },
   data() {
     return {
@@ -60,6 +58,12 @@ export default {
       console.log("changing");
       this.widthOfColumns = 800 / this.numOfColumns;
     },
+    createColumns() {
+      this.columns = []
+      for(var i = 0; i <= 800; i++) {
+        this.columns.push(this.randomNumberBetween(1, 500))
+      }
+    }
   }
 }
 </script>
@@ -67,7 +71,7 @@ export default {
 <style>
 
 .row {
-  /* background: black; */
+  background: black;
   width: 800px;
   margin: 0px auto;
   overflow: hidden;
@@ -78,8 +82,8 @@ export default {
 }
 
 .column {
-  background: black;
-  /* border-left: 1px solid black; */
+  background: white;
+  /* background: black; */
 }
 
 </style>
