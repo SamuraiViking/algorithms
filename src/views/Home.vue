@@ -1,9 +1,10 @@
 <template>
   <div class="home">
     <div class="row">
-      <div v-for="column in columns" v-bind:key="column">
-        <div class="column" :style="divDimensions(200, column.length)">
-          {{ column.length }}
+      <div class="row-container">
+        <div v-for="column in columns" v-bind:key="column">
+          <div class="column" :style="divDimensions(10, column.length)">
+          </div>
         </div>
       </div>
     </div>
@@ -16,21 +17,25 @@ export default {
   name: 'home',
   components: {
   },
-  data() {
-    return {
-      columns: [
-        { length: 500 },
-        { length: 100 },
-        { length: 500 },
-        { length: 200 },
-        { length: 500 },
-        { length: 300 },
-      ]
+  created() {
+    for(var i = 0; i < this.numOfColumns; i++) {
+      this.columns.push({ length: this.randomNumberBetween(100, 1000) })
     }
   },
+  data() {
+    return {
+      numOfColumns: 100,
+      columns: []
+    }
+  },  
   methods: {
     divDimensions(width, height) {
       return `width: ${width}px; height: ${height}px;`
+    },
+    randomNumberBetween(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1) + min);
     }
   }
 }
@@ -39,6 +44,12 @@ export default {
 <style>
 
 .row {
+  max-width: 800px;
+  margin: 0px auto;
+  overflow: hidden;
+}
+
+.row-container {
   display: flex;
 }
 
