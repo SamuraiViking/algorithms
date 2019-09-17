@@ -2,11 +2,13 @@
   <div class="home">
     <range-slider
       class="slider"
-      min="10"
+      min="1"
       max="800"
-      step="10"
+      step="1"
       v-model="numOfColumns"
-      @change="changeWidthOfColumns()">
+      @input="changeWidthOfColumns()"
+      >
+      <!-- @change="changeWidthOfColumns()" -->
     </range-slider>
     <div>
       {{ numOfColumns }}
@@ -58,9 +60,6 @@ export default {
       console.log("changing");
       this.widthOfColumns = 800 / this.numOfColumns;
     },
-    createColumns() {
-
-    }
   }
 }
 </script>
