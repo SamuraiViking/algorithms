@@ -3,7 +3,7 @@
     <range-slider
       class="slider"
       min="1"
-      max="800"
+      max="400"
       step="1"
       v-model="numOfColumns"
       @input="changeWidthOfColumns()"
@@ -17,8 +17,7 @@
     <div class="row">
       <div class="row-container">
         <div v-for="column in columns">
-          <div class="column" :style="divDimensions(widthOfColumns, column)">
-          </div>
+          <div class="column" :style="divDimensions(widthOfColumns, column)"></div>
         </div>
       </div>
     </div>
@@ -41,8 +40,8 @@ export default {
   },
   data() {
     return {
-      numOfColumns: 800,
-      widthOfColumns: 1,
+      numOfColumns: 400,
+      widthOfColumns: 2,
       columns: []
     }
   },  
@@ -61,15 +60,20 @@ export default {
     },
     createColumns() {
       this.columns = []
-      for(var i = 0; i <= this.numOfColumns; i++) {
+      for(var i = 0; i < this.numOfColumns; i++) {
         this.columns.push(this.randomNumberBetween(1, 500))
       }
     },
     sortColumns() {
-      this.columns = this.columns.sort(function(a, b){return a-b});
-      this.columns.forEach(function(element) {
-        console.log(element);
+      var columns = document.getElementsByClassName("row-container")[0].childNodes
+      columns.forEach(function(node) {
+        console.log(node);
+        var column = node.childNodes[0]
+        column.setAttribute('style', 'height: 50px; width: 50px;')
       })
+    },
+    mySort(a, b) {
+      return a - b
     }
   }
 }
