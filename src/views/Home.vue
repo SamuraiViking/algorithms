@@ -71,9 +71,9 @@ export default {
 <style>
 
 .row {
+  margin: 100px auto 0px auto;
   background: black;
   width: 800px;
-  margin: 0px auto;
   overflow: hidden;
 }
 
