@@ -13,6 +13,7 @@
       Num of Columns: {{ numOfColumns }}
     </div>
     <button @click="createColumns()">Create New Columns</button>
+    <button @click="sortColumns()">Sort Columns</button>
     <div class="row">
       <div class="row-container">
         <div v-for="column in columns">
@@ -55,14 +56,20 @@ export default {
       return Math.floor(Math.random() * (max - min + 1) + min);
     },
     changeWidthOfColumns() {
-      console.log("changing");
       this.widthOfColumns = 800 / this.numOfColumns;
+      this.createColumns();
     },
     createColumns() {
       this.columns = []
-      for(var i = 0; i <= 800; i++) {
+      for(var i = 0; i <= this.numOfColumns; i++) {
         this.columns.push(this.randomNumberBetween(1, 500))
       }
+    },
+    sortColumns() {
+      this.columns = this.columns.sort(function(a, b){return a-b});
+      this.columns.forEach(function(element) {
+        console.log(element);
+      })
     }
   }
 }
@@ -72,9 +79,8 @@ export default {
 
 .row {
   margin: 100px auto 0px auto;
-  background: black;
+  background: white;
   width: 800px;
-  overflow: hidden;
 }
 
 .row-container {
@@ -82,7 +88,7 @@ export default {
 }
 
 .column {
-  background: white;
+  background: black;
   /* background: black; */
 }
 
