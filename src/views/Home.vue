@@ -64,13 +64,28 @@ export default {
         this.columns.push(this.randomNumberBetween(1, 500))
       }
     },
+    startSorting() {
+      setTimeout(sortColumns(), 500);
+    },
     sortColumns() {
       var columns = document.getElementsByClassName("row-container")[0].childNodes
-      columns.forEach(function(node) {
-        console.log(node);
-        var column = node.childNodes[0]
-        column.setAttribute('style', 'height: 50px; width: 50px;')
-      })
+      this.swap(columns);
+      // columns.forEach(function(node) {
+      //   console.log(node);
+      //   var column = node.childNodes[0]
+      //   column.setAttribute('style', `height: 50px; width: ${2}px;`)
+      // })
+    },
+    swap(columns) {
+      columns.forEach(function(node, index) {
+        setTimeout(function(){ console.log('hello'); }, index * 100);
+        // setTimeout(this.changeColumn(node), 500)
+      }.bind(this));
+    },
+    changeColumn(node) {
+      console.log('going');
+      var column = node.childNodes[0]
+      column.setAttribute('style', `height: 50px; width: ${2}px;`)
     },
     mySort(a, b) {
       return a - b
