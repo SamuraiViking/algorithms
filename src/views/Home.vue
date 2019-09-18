@@ -43,7 +43,6 @@ export default {
       numOfColumns: 400,
       widthOfColumns: 2,
       columns: [],
-      selectedColumn: '',
     }
   },  
   methods: {
@@ -65,25 +64,25 @@ export default {
         this.columns.push(this.randomNumberBetween(1, 500))
       }
     },
-    startSorting() {
-      setTimeout(sortColumns(), 500);
-    },
     sortColumns() {
       var columns = document.getElementsByClassName("row-container")[0].childNodes
-      columns.forEach(function(node, index) {
-        var column = node.childNodes[0]
-        setTimeout(function() {
-          console.log(column);
-          column.setAttribute('style', 'background: blue;');
-        }, index * 100, column)
-      }.bind(this));
-    },
-    selectColumn() {
-    },
-    changeColumn(node) {
-      console.log('going');
-      var column = node.childNodes[0]
-      column.setAttribute('style', `height: 50px; width: ${2}px;`)
+      columns.forEach((column ,index) => {
+        if(index) {
+          var prevSelectedCol = columns[index - 1].childNodes[0]
+        }
+        var selectedCol = columns[index].childNodes[0]
+        setTimeout(() => {
+          if(prevSelectedCol) {
+            prevSelectedCol.classList.remove('selected')
+          }
+          selectedCol.classList.add('selected')
+          if(index === this.numOfColumns - 1) {
+            setTimeout(() => {
+              selectedCol.classList.remove('selected')
+            }, 100)
+          }
+        }, index * 100, selectedCol, prevSelectedCol, index)
+      });
     },
     mySort(a, b) {
       return a - b
@@ -104,10 +103,13 @@ export default {
   display: flex;
 }
 
+.selected {
+  background: blue !important;
+}
+
 .column {
   background: black;
   border: 1px solid white;
-  /* background: black; */
 }
 
 </style>
