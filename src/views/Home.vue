@@ -8,23 +8,13 @@
         step="1"
         v-model="numOfColumns"
         @input="changeWidthOfColumns()"
-        >
-      </range-slider>
+      ></range-slider>
     </div>
+    <div>Num of Columns: {{ numOfColumns }}</div>
     <div>
-      Num of Columns: {{ numOfColumns }}
+      <range-slider class="slider" min="1" max="100" step="1" v-model="timeInterval"></range-slider>
     </div>
-    <div>
-      <range-slider
-        class="slider"
-        min="1"
-        max="100"
-        step="1"
-        v-model="timeInterval"
-        >
-      </range-slider>
-    </div>
-      Speed: {{ timeInterval }}
+    Speed: {{ timeInterval }}
     <div>
       <button @click="createColumns()">Create New Columns</button>
     </div>
@@ -42,18 +32,17 @@
 </template>
 
 <script>
-
-import RangeSlider from 'vue-range-slider'
+import RangeSlider from "vue-range-slider";
 // you probably need to import built-in style
-import 'vue-range-slider/dist/vue-range-slider.css'
+import "vue-range-slider/dist/vue-range-slider.css";
 
 export default {
-  name: 'home',
+  name: "home",
   components: {
     RangeSlider
   },
   created() {
-    this.createColumns()
+    this.createColumns();
   },
   data() {
     return {
@@ -61,12 +50,12 @@ export default {
       containerSize: 800,
       widthOfColumns: 2,
       timeInterval: 2,
-      columns: [],
-    }
-  },  
+      columns: []
+    };
+  },
   methods: {
     divDimensions(width, height) {
-      return `width: ${width}px; height: ${height}px;`
+      return `width: ${width}px; height: ${height}px;`;
     },
     randomNumberBetween(min, max) {
       min = Math.ceil(min);
@@ -78,48 +67,64 @@ export default {
       this.createColumns();
     },
     createColumns() {
-      this.columns = []
-      for(var i = 0; i < this.numOfColumns; i++) {
-        this.columns.push(this.randomNumberBetween(25, 500))
+      this.columns = [];
+      for (var i = 0; i < this.numOfColumns; i++) {
+        this.columns.push(this.randomNumberBetween(25, 500));
       }
     },
     sortColumns() {
-      var columns = document.getElementsByClassName("row-container")[0].childNodes
-      columns.forEach((column ,index) => {
-        if(index - 1 >= 0) {
-          var prevSelectedCol = columns[index - 1].childNodes[0]
+      var columns = document.getElementsByClassName("row-container")[0]
+        .childNodes;
+      columns.forEach((column, index) => {
+        if (index - 1 >= 0) {
+          var prevSelectedCol = columns[index - 1].childNodes[0];
         }
-        if(index - 2 >= 0) {
-          var prevPrevSelectedCol = columns[index - 2].childNodes[0]
+        if (index - 2 >= 0) {
+          var prevPrevSelectedCol = columns[index - 2].childNodes[0];
         }
-        var selectedCol = columns[index].childNodes[0]
-        setTimeout(() => {
-          if(prevPrevSelectedCol) {
-            prevPrevSelectedCol.classList.remove('selected');
-          }
-          if(prevSelectedCol) {
-            prevSelectedCol.classList.add('selected')
-          }
+        var selectedCol = columns[index].childNodes[0];
+        setTimeout(
+          () => {
+            if (prevPrevSelectedCol) {
+              prevPrevSelectedCol.classList.remove("selected");
+            }
+            if (prevSelectedCol) {
+              prevSelectedCol.classList.add("selected");
+              var prevSelectedColHeight = prevSelectedCol.style.height;
+            }
 
-          selectedCol.classList.add('selected')
-          if(index === this.numOfColumns - 1) {
-            setTimeout(() => {
-              selectedCol.classList.remove('selected')
-              prevSelectedCol.remove('selected')
-            }, this.timeInterval)
-          }
-        }, index * this.timeInterval, selectedCol, prevSelectedCol, index)
+            selectedCol.classList.add("selected");
+            var selectedColHeight = selectedCol.style.height;
+
+            if(selectedColHeight > prevSelectedColHeight) {
+              // console.log(`${selectedColHeight} is larger than ${prevSelectedColHeight}`)
+              console.log(selectedColHeight)
+              prevSelectedCol.setAttribute('style', `width:${this.widthOfColumns}px; height: ${selectedColHeight};`)
+              selectedCol.setAttribute('style', `width:${this.widthOfColumns}px; height: ${prevSelectedColHeight}`)
+            }
+
+            if (index === this.numOfColumns - 1) {
+              setTimeout(() => {
+                selectedCol.classList.remove("selected");
+                prevSelectedCol.remove("selected");
+              }, this.timeInterval);
+            }
+          },
+          index * this.timeInterval,
+          selectedCol,
+          prevSelectedCol,
+          index
+        );
       });
     },
     mySort(a, b) {
-      return a - b
+      return a - b;
     }
   }
-}
+};
 </script>
 
 <style>
-
 .row {
   margin: 100px auto 0px auto;
   margin: 0px auto;
@@ -138,5 +143,4 @@ export default {
 .column {
   background: black;
 }
-
 </style>
