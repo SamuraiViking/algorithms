@@ -1,19 +1,36 @@
 <template>
   <div class="home">
-    <range-slider
-      class="slider"
-      min="1"
-      max="400"
-      step="1"
-      v-model="numOfColumns"
-      @input="changeWidthOfColumns()"
-      >
-    </range-slider>
+    <div>
+      <range-slider
+        class="slider"
+        min="1"
+        :max="containerSize"
+        step="1"
+        v-model="numOfColumns"
+        @input="changeWidthOfColumns()"
+        >
+      </range-slider>
+    </div>
     <div>
       Num of Columns: {{ numOfColumns }}
     </div>
-    <button @click="createColumns()">Create New Columns</button>
-    <button @click="sortColumns()">Sort Columns</button>
+    <div>
+      <range-slider
+        class="slider"
+        min="1"
+        max="100"
+        step="1"
+        v-model="timeInterval"
+        >
+      </range-slider>
+    </div>
+      Speed: {{ timeInterval }}
+    <div>
+      <button @click="createColumns()">Create New Columns</button>
+    </div>
+    <div>
+      <button @click="sortColumns()">Sort Columns</button>
+    </div>
     <div class="row">
       <div class="row-container">
         <div v-for="column in columns">
@@ -41,7 +58,9 @@ export default {
   data() {
     return {
       numOfColumns: 400,
+      containerSize: 800,
       widthOfColumns: 2,
+      timeInterval: 2,
       columns: [],
     }
   },  
@@ -55,33 +74,41 @@ export default {
       return Math.floor(Math.random() * (max - min + 1) + min);
     },
     changeWidthOfColumns() {
-      this.widthOfColumns = 800 / this.numOfColumns;
+      this.widthOfColumns = this.containerSize / this.numOfColumns;
       this.createColumns();
     },
     createColumns() {
       this.columns = []
       for(var i = 0; i < this.numOfColumns; i++) {
-        this.columns.push(this.randomNumberBetween(1, 500))
+        this.columns.push(this.randomNumberBetween(25, 500))
       }
     },
     sortColumns() {
       var columns = document.getElementsByClassName("row-container")[0].childNodes
       columns.forEach((column ,index) => {
-        if(index) {
+        if(index - 1 >= 0) {
           var prevSelectedCol = columns[index - 1].childNodes[0]
+        }
+        if(index - 2 >= 0) {
+          var prevPrevSelectedCol = columns[index - 2].childNodes[0]
         }
         var selectedCol = columns[index].childNodes[0]
         setTimeout(() => {
-          if(prevSelectedCol) {
-            prevSelectedCol.classList.remove('selected')
+          if(prevPrevSelectedCol) {
+            prevPrevSelectedCol.classList.remove('selected');
           }
+          if(prevSelectedCol) {
+            prevSelectedCol.classList.add('selected')
+          }
+
           selectedCol.classList.add('selected')
           if(index === this.numOfColumns - 1) {
             setTimeout(() => {
               selectedCol.classList.remove('selected')
-            }, 100)
+              prevSelectedCol.remove('selected')
+            }, this.timeInterval)
           }
-        }, index * 100, selectedCol, prevSelectedCol, index)
+        }, index * this.timeInterval, selectedCol, prevSelectedCol, index)
       });
     },
     mySort(a, b) {
@@ -95,8 +122,9 @@ export default {
 
 .row {
   margin: 100px auto 0px auto;
+  margin: 0px auto;
+  width: 800px;
   background: white;
-  width: 50%;
 }
 
 .row-container {
@@ -109,7 +137,6 @@ export default {
 
 .column {
   background: black;
-  border: 1px solid white;
 }
 
 </style>
