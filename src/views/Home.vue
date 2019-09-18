@@ -42,7 +42,8 @@ export default {
     return {
       numOfColumns: 400,
       widthOfColumns: 2,
-      columns: []
+      columns: [],
+      selectedColumn: '',
     }
   },  
   methods: {
@@ -69,18 +70,15 @@ export default {
     },
     sortColumns() {
       var columns = document.getElementsByClassName("row-container")[0].childNodes
-      this.swap(columns);
-      // columns.forEach(function(node) {
-      //   console.log(node);
-      //   var column = node.childNodes[0]
-      //   column.setAttribute('style', `height: 50px; width: ${2}px;`)
-      // })
-    },
-    swap(columns) {
       columns.forEach(function(node, index) {
-        setTimeout(function(){ console.log('hello'); }, index * 100);
-        // setTimeout(this.changeColumn(node), 500)
+        var column = node.childNodes[0]
+        setTimeout(function() {
+          console.log(column);
+          column.setAttribute('style', 'background: blue;');
+        }, index * 100, column)
       }.bind(this));
+    },
+    selectColumn() {
     },
     changeColumn(node) {
       console.log('going');
@@ -99,7 +97,7 @@ export default {
 .row {
   margin: 100px auto 0px auto;
   background: white;
-  width: 800px;
+  width: 50%;
 }
 
 .row-container {
@@ -108,6 +106,7 @@ export default {
 
 .column {
   background: black;
+  border: 1px solid white;
   /* background: black; */
 }
 
