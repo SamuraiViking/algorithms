@@ -23,7 +23,13 @@
     </div>
     <div class="row">
       <div class="column-container" v-for="column in columns" :key="column.key">
-          <div class="column"
+          <div v-if="selectedCol===column"
+               class="column selected"
+               :style="divDimensions(widthOfColumns, column.changeHeight)"
+          >
+          </div>
+          <div v-else 
+               class="column"
                :style="divDimensions(widthOfColumns, column.height)">
           </div>
       </div>
@@ -58,9 +64,6 @@ export default {
     divDimensions(width, height) {
       return `width: ${width}px; height: ${height}px;`;
     },
-    changeHeight() {
-      console.log("hello")
-    },
     randomNumberBetween(min, max) {
       min = Math.ceil(min);
       max = Math.floor(max);
@@ -90,11 +93,12 @@ export default {
           i, j, stop;
       for (i=0; i < len; i++){
         for (j=0, stop=len-i; j < stop; j++){
-          setTimeout(this.bubbleOneSort.bind(null, arr, j ,i), i * 100);
+          setTimeout(this.bubbleOneSort.bind(null, arr, j ,i), i);
         }
       }
     },
     bubbleOneSort(arr, j, i) {
+      this.selectedCol = arr[j]
       if(arr[j + 1]) {
         if (arr[j].height > arr[j+1].height){
           var temp = arr[j].height
@@ -126,7 +130,7 @@ export default {
 }
 
 .selected {
-  background: blue !important;
+  background: red !important;
 }
 
 .column-container {
