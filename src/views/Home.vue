@@ -4,17 +4,13 @@
       <range-slider
         class="slider"
         min="1"
-        :max="containerSize"
+        :max="250"
         step="1"
         v-model="numOfColumns"
         @input="changeWidthOfColumns()"
       ></range-slider>
     </div>
     <div>Num of Columns: {{ numOfColumns }}</div>
-    <div>
-      <range-slider class="slider" min="1" max="100" step="1" v-model="timeInterval"></range-slider>
-    </div>
-    Speed: {{ timeInterval }}
     <div>
       <button @click="createColumns()">Create New Columns</button>
     </div>
@@ -49,12 +45,13 @@ export default {
   },
   created() {
     this.createColumns();
+    this.widthOfColumns = this.containerSize / this.numOfColumns
   },
   data() {
     return {
-      numOfColumns: 800,
+      numOfColumns: 100,
       containerSize: 800,
-      widthOfColumns: 1,
+      widthOfColumns: '',
       timeInterval: 0.0,
       selectedCol: '',
       columns: []
@@ -93,8 +90,13 @@ export default {
           i, j, stop;
       for (i=0; i < len; i++){
         for (j=0, stop=len-i; j < stop; j++){
-          setTimeout(this.bubbleOneSort.bind(null, arr, j ,i), i);
+          setTimeout(this.bubbleOneSort.bind(null, arr, j ,i), i * 1);
         }
+      }
+    },
+    nestedBubbleLoop(j,i,len,stop, arr) {
+      for (j=0, stop=len-i; j < stop; j++){
+        setTimeout(this.bubbleOneSort.bind(null, arr, j ,i), i * 1000);
       }
     },
     bubbleOneSort(arr, j, i) {
