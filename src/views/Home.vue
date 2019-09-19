@@ -22,10 +22,10 @@
       <button @click="sortColumns()">Sort Columns</button>
     </div>
     <div class="row">
-      <div class="row-container">
-        <div v-for="column in columns">
-          <div class="column" :style="divDimensions(widthOfColumns, column)"></div>
-        </div>
+      <div class="column-container" v-for="column in columns" :key="column.key">
+          <div class="column"
+               :style="divDimensions(widthOfColumns, column.height)">
+          </div>
       </div>
     </div>
   </div>
@@ -50,12 +50,16 @@ export default {
       containerSize: 800,
       widthOfColumns: 1,
       timeInterval: 0.0,
+      selectedCol: '',
       columns: []
     };
   },
   methods: {
     divDimensions(width, height) {
       return `width: ${width}px; height: ${height}px;`;
+    },
+    changeHeight() {
+      console.log("hello")
     },
     randomNumberBetween(min, max) {
       min = Math.ceil(min);
@@ -67,58 +71,18 @@ export default {
       this.createColumns();
     },
     createColumns() {
-      this.columns = [100];
+      this.columns = [];
       for (var i = 0; i < this.numOfColumns; i++) {
-        this.columns.push(this.randomNumberBetween(10, 490));
+        var elem = { key: i, height: this.randomNumberBetween(10, 490) }
+        this.columns.push(elem);
       }
     },
-    sortColumns() { 
-      var columns = document.getElementsByClassName("row-container")[0]
-                            .childNodes;
-      columns.forEach((column, index  ) => {
-        if (index - 1 >= 0) {
-          var prevSelectedCol = columns[index - 1]
-        }
-        var selectedCol = columns[index];
-        setTimeout(
-          () => {
-            this.bubbleLoop(selectedCol, prevSelectedCol, index)
-          },
-          index * this.timeInterval,
-          selectedCol,
-          prevSelectedCol,
-          index
-        );
-      });
+    sortColumns() {
+      this.columns.forEach(function(column) {
+        column.height = 1000;
+      })
     },
-    bubbleLoop(selectedCol, prevSelectedCol, index) {
-      selectedCol = selectedCol.childNodes[0]
-      if (prevSelectedCol) {
-        prevSelectedCol = prevSelectedCol.childNodes[0]
-        prevSelectedCol.parentNode.setAttribute('style', `background: ${'black'};`)
-        var prevSelectedColHeight = prevSelectedCol.style.height;
-        prevSelectedColHeight = prevSelectedColHeight.replace(/[px]/, '')
-        prevSelectedColHeight = parseInt(prevSelectedColHeight)
-      }
-
-      selectedCol.parentNode.setAttribute('style', 'background: red;')
-      var selectedColHeight = selectedCol.style.height
-      selectedColHeight = selectedColHeight.replace(/[px]/,'')
-      selectedColHeight = parseInt(selectedColHeight)
-
-      if(selectedColHeight > prevSelectedColHeight) {
-        prevSelectedCol.setAttribute('style', `width:${this.widthOfColumns}px; height: ${selectedColHeight}px;`)
-        selectedCol.setAttribute('style', `width:${this.widthOfColumns}px; height: ${prevSelectedColHeight}px;`)
-      }
-
-      if (index === this.numOfColumns - 1) {
-        setTimeout(() => {
-          selectedCol.parentNode.classList.remove("selected");
-          prevSelectedCol.parentNode.classList.remove("selected");
-        }, this.timeInterval);
-      }
-    },
-    getRandomColor() {
+    getRandomColor() {  
       var letters = '0123456789ABCDEF';
       var color = '#';
       for (var i = 0; i < 6; i++) {
@@ -135,15 +99,8 @@ export default {
 
 <style>
 .row {
-  margin: 100px auto 0px auto;
-  margin: 0px auto;
   width: 800px;
-  background: black;
-}
-
-.row-container {
-  height: 510px;
-  background: black;
+  margin: 0px auto;
   display: flex;
 }
 
@@ -151,7 +108,12 @@ export default {
   background: blue !important;
 }
 
+.column-container {
+  /* position: relative; */
+}
+
 .column {
-  background: white;
+  bottom: 0px;
+  background: black;
 }
 </style>
