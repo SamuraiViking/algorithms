@@ -69,55 +69,53 @@ export default {
     createColumns() {
       this.columns = [100];
       for (var i = 0; i < this.numOfColumns; i++) {
-        this.columns.push(this.randomNumberBetween(10, 500));
+        this.columns.push(this.randomNumberBetween(10, 490));
       }
     },
-    sortColumns() {
+    sortColumns() { 
       var columns = document.getElementsByClassName("row-container")[0]
                             .childNodes;
-      for(var i = 0; i < 1000; i++) {
+      columns.forEach((column, index  ) => {
+        if (index - 1 >= 0) {
+          var prevSelectedCol = columns[index - 1]
+        }
+        var selectedCol = columns[index];
         setTimeout(
           () => {
-          columns.forEach((column, index  ) => {
-            if (index - 1 >= 0) {
-              var prevSelectedCol = columns[index - 1]
-            }
-            var selectedCol = columns[index];
-            var selectedColBackground = columns[index]
-            setTimeout(
-              () => {
-                selectedCol = selectedCol.childNodes[0]
-                if (prevSelectedCol) {
-                  prevSelectedCol = prevSelectedCol.childNodes[0]
-                  prevSelectedCol.parentNode.setAttribute('style', `background: ${'black'};`)
-                  var prevSelectedColHeight = prevSelectedCol.style.height;
-                  prevSelectedColHeight = prevSelectedColHeight.replace(/[px]/, '')
-                  prevSelectedColHeight = parseInt(prevSelectedColHeight)
-                }
-    
-                // selectedCol.parentNode.setAttribute('style', 'background: blue;')
-                var selectedColHeight = selectedCol.style.height
-                selectedColHeight = selectedColHeight.replace(/[px]/,'')
-                selectedColHeight = parseInt(selectedColHeight)
-    
-                if(selectedColHeight > prevSelectedColHeight) {
-                  prevSelectedCol.setAttribute('style', `width:${this.widthOfColumns}px; height: ${selectedColHeight}px;`)
-                  selectedCol.setAttribute('style', `width:${this.widthOfColumns}px; height: ${prevSelectedColHeight}px;`)
-                }
-    
-                if (index === this.numOfColumns - 1) {
-                  setTimeout(() => {
-                    selectedCol.parentNode.classList.remove("selected");
-                    prevSelectedCol.parentNode.classList.remove("selected");
-                  }, this.timeInterval);
-                }
-              },
-              index * this.timeInterval,
-              selectedCol,
-              prevSelectedCol,
-            );
-          });
-        }, i * 100);
+            this.bubbleLoop(selectedCol, prevSelectedCol, index)
+          },
+          index * this.timeInterval,
+          selectedCol,
+          prevSelectedCol,
+          index
+        );
+      });
+    },
+    bubbleLoop(selectedCol, prevSelectedCol, index) {
+      selectedCol = selectedCol.childNodes[0]
+      if (prevSelectedCol) {
+        prevSelectedCol = prevSelectedCol.childNodes[0]
+        prevSelectedCol.parentNode.setAttribute('style', `background: ${'black'};`)
+        var prevSelectedColHeight = prevSelectedCol.style.height;
+        prevSelectedColHeight = prevSelectedColHeight.replace(/[px]/, '')
+        prevSelectedColHeight = parseInt(prevSelectedColHeight)
+      }
+
+      selectedCol.parentNode.setAttribute('style', 'background: red;')
+      var selectedColHeight = selectedCol.style.height
+      selectedColHeight = selectedColHeight.replace(/[px]/,'')
+      selectedColHeight = parseInt(selectedColHeight)
+
+      if(selectedColHeight > prevSelectedColHeight) {
+        prevSelectedCol.setAttribute('style', `width:${this.widthOfColumns}px; height: ${selectedColHeight}px;`)
+        selectedCol.setAttribute('style', `width:${this.widthOfColumns}px; height: ${prevSelectedColHeight}px;`)
+      }
+
+      if (index === this.numOfColumns - 1) {
+        setTimeout(() => {
+          selectedCol.parentNode.classList.remove("selected");
+          prevSelectedCol.parentNode.classList.remove("selected");
+        }, this.timeInterval);
       }
     },
     getRandomColor() {
@@ -144,6 +142,8 @@ export default {
 }
 
 .row-container {
+  height: 510px;
+  background: black;
   display: flex;
 }
 
