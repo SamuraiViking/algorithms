@@ -78,9 +78,30 @@ export default {
       }
     },
     sortColumns() {
-      this.columns.forEach(function(column) {
-        column.height = 1000;
-      })
+      this.bubbleSort(this.columns)
+    },
+    swap(arr, first_Index, second_Index){
+        var temp = arr[first_Index].height;
+        arr[first_Index].height = arr[second_Index].height;
+        arr[second_Index] = temp;
+    },
+    bubbleSort(arr){
+      var len = arr.length,
+          i, j, stop;
+      for (i=0; i < len; i++){
+        for (j=0, stop=len-i; j < stop; j++){
+          setTimeout(this.bubbleOneSort.bind(null, arr, j ,i), i * 100);
+        }
+      }
+    },
+    bubbleOneSort(arr, j, i) {
+      if(arr[j + 1]) {
+        if (arr[j].height > arr[j+1].height){
+          var temp = arr[j].height
+          arr[j].height = arr[j + 1].height;
+          arr[j + 1].height = temp
+        }
+      }
     },
     getRandomColor() {  
       var letters = '0123456789ABCDEF';
