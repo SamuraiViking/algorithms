@@ -20,6 +20,7 @@
     <select v-model="sortType">
       <option>Bubble</option>
       <option>Insertion</option>
+      <option>Cocktail</option>
     </select>
     <div>
       <range-slider
@@ -98,12 +99,14 @@ export default {
         this.bubbleSort(this.columns)
       } else if(this.sortType === 'Insertion') {
         this.insertionSort(this.columns)
+      } else if(this.sortType === 'Cocktail') {
+        this.cocktailSort(this.columns)
       }
     },
-    swap(arr, first_Index, second_Index){
-        var temp = arr[first_Index].height;
-        arr[first_Index].height = arr[second_Index].height;
-        arr[second_Index] = temp;
+    swap(arr, firstIndex, secondIndex){
+      var temp = arr[firstIndex].height;
+      arr[firstIndex].height = arr[secondIndex].height;
+      arr[secondIndex].height = temp;
     },
     async bubbleSort(arr){
       var len = arr.length,
@@ -122,16 +125,6 @@ export default {
         }
       }
     },
-    oneBubbleSort(arr, j, i) {
-      this.selectedCol = arr[j]
-      if(arr[j + 1]) {
-        if (arr[j].height > arr[j+1].height){
-          var temp = arr[j].height
-          arr[j].height = arr[j + 1].height;
-          arr[j + 1].height = temp
-        }
-      }
-    },
     async insertionSort(arr) {
       for (let i = 1; i < arr.length; i++) {
         let key = arr[i].height;
@@ -145,9 +138,23 @@ export default {
         arr[j + 1].height = key;
       }
     },
-    oneInsertionSort(arr, j, i) {
-      arr[j + 1].height = arr[j].height
-      j = j - 1;
+    cocktailSort(arr) {
+      var i, left = 0, right = arr.length - 1, temp;
+      
+      while (left < right) {
+        for (i = left; i < right; i++) {
+          if (arr[i].height > arr[i + 1].height) {
+            this.swap(arr, i, i+1);
+          }
+        }
+        right--;
+        for (i = right; i > left; i--) {
+          if (arr[i - 1].height > arr[i].height) {
+              this.swap(arr, i-1, i);
+          }
+        }
+        left++;
+      }
     },
     getRandomColor() {  
       var letters = '0123456789ABCDEF';
@@ -157,9 +164,6 @@ export default {
       }
       return color;
     },
-    mySort(a, b) {
-      return a - b;
-    }
   }
 };
 </script>
