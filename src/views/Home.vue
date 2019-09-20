@@ -58,6 +58,9 @@ export default {
     };
   },
   methods: {
+    sleep (milliseconds) {
+      return new Promise(resolve => setTimeout(resolve, milliseconds))
+    },
     divDimensions(width, height) {
       return `width: ${width}px; height: ${height}px;`;
     },
@@ -88,18 +91,14 @@ export default {
     bubbleSort(arr){
       var len = arr.length,
           i, j, stop;
-      for (i=0; i < len; i++){
+      for (i=0; i < len; i++) {
         for (j=0, stop=len-i; j < stop; j++){
-          setTimeout(this.bubbleOneSort.bind(null, arr, j ,i), i * 1);
+          setTimeout(this.oneBubbleSort.bind(null, arr, j ,i), 100);
         }
       }
     },
-    nestedBubbleLoop(j,i,len,stop, arr) {
-      for (j=0, stop=len-i; j < stop; j++){
-        setTimeout(this.bubbleOneSort.bind(null, arr, j ,i), i * 1000);
-      }
-    },
-    bubbleOneSort(arr, j, i) {
+    oneBubbleSort(arr, j, i) {
+      console.log(i)
       this.selectedCol = arr[j]
       if(arr[j + 1]) {
         if (arr[j].height > arr[j+1].height){
@@ -108,6 +107,19 @@ export default {
           arr[j + 1].height = temp
         }
       }
+    },
+    insertionSort(arr) {
+        let length = arr.length;
+        for (let i = 1; i < length; i++) {
+            let key = arr[i];
+            let j = i - 1;
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+            arr[j + 1] = key;
+        }
+        return arr;
     },
     getRandomColor() {  
       var letters = '0123456789ABCDEF';
