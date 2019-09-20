@@ -138,17 +138,21 @@ export default {
         arr[j + 1].height = key;
       }
     },
-    cocktailSort(arr) {
+    async cocktailSort(arr) {
       var i, left = 0, right = arr.length - 1, temp;
       
       while (left < right) {
         for (i = left; i < right; i++) {
+          this.selectedCol = arr[i]
+          await this.sleep(this.timeInterval)
           if (arr[i].height > arr[i + 1].height) {
             this.swap(arr, i, i+1);
           }
         }
         right--;
         for (i = right; i > left; i--) {
+          this.selectedCol = arr[i]
+          await this.sleep(this.timeInterval)
           if (arr[i - 1].height > arr[i].height) {
               this.swap(arr, i-1, i);
           }
