@@ -4,7 +4,7 @@
       <range-slider
         class="slider"
         min="1"
-        :max="250"
+        max="250"
         step="1"
         v-model="numOfColumns"
         @input="changeWidthOfColumns()"
@@ -16,6 +16,19 @@
     </div>
     <div>
       <button @click="sortColumns()">Sort Columns</button>
+    </div>
+    <select v-model="sortType">
+      <option>Bubble</option>
+      <option>Insertion</option>
+    </select>
+    <div>
+      <range-slider
+        class="slider"
+        min="1"
+        max="100"
+        step="1"
+        v-model="timeInterval"
+      ></range-slider>
     </div>
     <div class="row">
       <div class="column-container" v-for="column in columns" :key="column.key">
@@ -35,7 +48,6 @@
 
 <script>
 import RangeSlider from "vue-range-slider";
-// you probably need to import built-in style
 import "vue-range-slider/dist/vue-range-slider.css";
 
 export default {
@@ -52,8 +64,9 @@ export default {
       numOfColumns: 100,
       containerSize: 800,
       widthOfColumns: '',
-      timeInterval: 0.0,
+      timeInterval: 1,
       selectedCol: '',
+      sortType: '',
       columns: []
     };
   },
@@ -81,24 +94,35 @@ export default {
       }
     },
     sortColumns() {
-      this.bubbleSort(this.columns)
+      if(this.sortType === 'Bubble') {
+        this.bubbleSort(this.columns)
+      } else if(this.sortType === 'Insertion') {
+        this.insertionSort(this.columns)
+      }
     },
     swap(arr, first_Index, second_Index){
         var temp = arr[first_Index].height;
         arr[first_Index].height = arr[second_Index].height;
         arr[second_Index] = temp;
     },
-    bubbleSort(arr){
+    async bubbleSort(arr){
       var len = arr.length,
           i, j, stop;
       for (i=0; i < len; i++) {
         for (j=0, stop=len-i; j < stop; j++){
-          setTimeout(this.oneBubbleSort.bind(null, arr, j ,i), 100);
+          this.selectedCol = arr[j]
+          await this.sleep(this.timeInterval);
+          if(arr[j + 1]) {
+            if (arr[j].height > arr[j+1].height){
+              var temp = arr[j].height
+              arr[j].height = arr[j + 1].height;
+              arr[j + 1].height = temp
+            }
+          }
         }
       }
     },
     oneBubbleSort(arr, j, i) {
-      console.log(i)
       this.selectedCol = arr[j]
       if(arr[j + 1]) {
         if (arr[j].height > arr[j+1].height){
@@ -108,18 +132,22 @@ export default {
         }
       }
     },
-    insertionSort(arr) {
-        let length = arr.length;
-        for (let i = 1; i < length; i++) {
-            let key = arr[i];
-            let j = i - 1;
-            while (j >= 0 && arr[j] > key) {
-                arr[j + 1] = arr[j];
-                j = j - 1;
-            }
-            arr[j + 1] = key;
+    async insertionSort(arr) {
+      for (let i = 1; i < arr.length; i++) {
+        let key = arr[i].height;
+        let j = i - 1;
+        while (j >= 0 && arr[j].height > key) {
+          this.selectedCol = arr[j]
+          await this.sleep(this.timeInterval);
+          arr[j + 1].height = arr[j].height;
+          j = j - 1;
         }
-        return arr;
+        arr[j + 1].height = key;
+      }
+    },
+    oneInsertionSort(arr, j, i) {
+      arr[j + 1].height = arr[j].height
+      j = j - 1;
     },
     getRandomColor() {  
       var letters = '0123456789ABCDEF';
