@@ -2,47 +2,61 @@
   <div class="home">
     <div id="home-container">
       <div id="selectors">
-        <div>
-          <div>Num of Columns: {{ numOfColumns }}</div>
-          <range-slider
-            class="slider"
-            min="1"
-            max="250"
-            step="1"
-            v-model="numOfColumns"
-            @input="changeWidthOfColumns()"
-          ></range-slider>
-        </div>
-        <div>
-          <div>Time Interval: {{ timeInterval }}ms</div>
-          <range-slider
-            class="slider"
-            min="1"
-            max="100"
-            step="1"
-            v-model="timeInterval"
-          ></range-slider>
-        </div>
-        <b-form-select v-model="sortType" :options="sortTypes"></b-form-select>
-        <div>
-          <b-button @click="sortColumns()">Sort Columns</b-button>
-        </div>
-        <div>
-          <b-button @click="createColumns()">Create New Columns</b-button>
+        <div id="selectors-container">
+          <div id="slider-selectors">
+            <div id="columns-selector">
+              <div class="mt-2">Columns: {{ numOfColumns}} </div>
+              <b-form-input id="range-1" v-model="numOfColumns" type="range" min="10" max="200" @change="createColumns"></b-form-input>
+            </div>
+            <div id="selectors-spacing"></div>
+            <div id="speed-selector">
+              <div class="mt-2">Speed: {{ timeInterval }}ms </div>
+              <b-form-input id="range-2" v-model="timeInterval" type="range" min="1" max="100"></b-form-input>
+            </div>
+          </div>
+          <!-- <div>
+            <div>Number of Columns: {{ numOfColumns }}</div>
+            <range-slider
+              class="slider"
+              min="1"
+              max="200"
+              step="1"
+              v-model="numOfColumns"
+              @input="changeWidthOfColumns()"
+            ></range-slider>
+          </div>
+          <div>
+            <div>Time Interval: {{ timeInterval }}ms</div>
+            <range-slider
+              class="slider"
+              min="1"
+              max="100"
+              step="1"
+              v-model="timeInterval"
+            ></range-slider>
+          </div> -->
+          <div>
+            <b-form-select v-model="sortType" :options="sortTypes"></b-form-select>
+          </div>
+          <div id="action-btns">
+            <b-button id="sort-btn" @click="sortColumns()">Sort</b-button>
+            <div id="btn-space"></div>
+            <b-button id="reset-btn" @click="createColumns()">Reset</b-button>
+          </div>
         </div>
       </div>
-      <div class="row">
-        <div class="column-container" v-for="column in columns" :key="column.key">
-            <div v-if="selectedCol===column"
-                class="column selected"
-                :style="divDimensions(widthOfColumns, column.changeHeight)"
-            >
-            </div>
-            <div v-else 
-                class="column"
-                :style="divDimensions(widthOfColumns, column.height)">
-            </div>
-        </div>
+    </div>
+    <div class="myColumns">
+      <div class="column-container" v-for="column in columns" :key="column.key">
+          <div v-if="selectedCol===column"
+              class="column selected"
+              :style="divDimensions(widthOfColumns, column.changeHeight)"
+          >
+          </div>
+          <div v-else 
+              class="column"
+              :style="divDimensions(widthOfColumns, column.height)">
+          </div>
       </div>
     </div>
   </div>
@@ -58,26 +72,42 @@ export default {
     RangeSlider
   },
   created() {
+    window.addEventListener('resize', this.handleResize)
+    this.handleResize();
     this.createColumns();
-    this.widthOfColumns = this.containerSize / this.numOfColumns
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize)
   },
   data() {
     return {
+      window: {
+        width: 0,
+        height: 0,
+      },
       sortTypes: [
-        'Bubble',
-        'Insertion',
-        'Cocktail',
+        { value: null, text: '-- Select a Sorting Algorithm --' },
+        { value: 'Bubble', text: 'Bubble' },
+        { value: 'Insertion', text: 'Insertion' },
+        { value: 'Cocktail', text: 'Cocktail' },
       ],
-      numOfColumns: 100,
+      numOfColumns: 50,
       containerSize: 800,
-      widthOfColumns: '',
+      widthOfColumns: 0,
       timeInterval: 1,
       selectedCol: '',
-      sortType: '',
+      sortType: null,
       columns: []
     };
   },
   methods: {
+    handleResize() {
+      this.window.width = window.innerWidth
+      this.window.height = window.innerHeight
+      // this.widthOfColumns = Math.floor(this.window.width / this.numOfColumns)
+      this.widthOfColumns = this.window.width / this.numOfColumns
+      console.log(this.widthOfColumns)
+    },
     sleep (milliseconds) {
       return new Promise(resolve => setTimeout(resolve, milliseconds))
     },
@@ -90,15 +120,16 @@ export default {
       return Math.floor(Math.random() * (max - min + 1) + min);
     },
     changeWidthOfColumns() {
-      this.widthOfColumns = this.containerSize / this.numOfColumns;
+      this.widthOfColumns = Math.ceil(this.window.width / this.numOfColumns);
       this.createColumns();
     },
     createColumns() {
       this.columns = [];
       for (var i = 0; i < this.numOfColumns; i++) {
-        var elem = { key: i, height: this.randomNumberBetween(10, 490) }
+        var elem = { key: i, height: this.randomNumberBetween(10, this.window.height - 330) }
         this.columns.push(elem);
       }
+      this.widthOfColumns = Math.ceil(this.window.width / this.numOfColumns);
     },
     sortColumns() {
       if(this.sortType === 'Bubble') {
@@ -179,32 +210,105 @@ export default {
 </script>
 
 <style>
-.row {
-  width: 800px;
-  margin: 0px auto;
+
+            /* <div id="columns-selector">
+              <div class="mt-2">Columns: {{ numOfColumns}} </div>
+              <b-form-input id="range-1" v-model="numOfColumns" type="range" min="10" max="200" @change="createColumns"></b-form-input>
+            </div>
+            <div id="selectors-spacing"></div>
+            <div id="speed-selector">
+              <div class="mt-2">Speed: {{ timeInterval }}ms </div>
+              <b-form-input id="range-2" v-model="timeInterval" type="range" min="1" max="100"></b-form-input>
+            </div> */
+#slider-selectors {
+  margin-bottom: 10px;
+}
+
+#columns-selector {
+  width: 60%;
+}
+
+#selectors-spacing {
+  width: 10%;
+}
+
+#speed-selectors {
+  width: 30%;
+}
+
+#slider-selectors {
   display: flex;
 }
 
+#speed-selector {
+  margin: 0px 0;
+}
+
+#action-btns {
+  margin-top: 20px;
+  display: flex;
+}
+
+.myColumns {
+  width: 100%;
+  display: flex;
+}
+
+#btn-space {
+  width: 10%;
+}
+
+
+#sort-btn {
+  width: 60%;
+}
+
+#reset-btn {
+  width: 30%;
+}
+
 .home {
-  margin-top: 50px;
+  /* margin-top: 50px; */
+}
+
+#selectors-container {
+  color: #BEBEBE;
+  background: black;
+  /* margin: 0px auto 50px auto; */
+  max-width: 400px;
+  margin: 0px auto;
+  padding: 20px;
 }
 
 #selectors {
   background: black;
-  margin: 0px auto 50px auto;
-  padding: 20px;
+  padding-bottom: 50px;
 }
 
+#left-selectors {
+  /* background: green; */
+  /* max-width: 400px; */
+  padding: 10px;
+  width: 50%;
+}
+#right-selectors {
+  text-align: right;
+  width: 50%;
+  /* padding: 10px; */
+  /* background: white; */
+}
 .selected {
   background: red !important;
 }
 
 #home-container {
-  max-width: 800px;
-  margin: 0px auto;
+  /* max-width: 800px; */
+  /* margin: 0px auto; */
 }
 
 .column-container {
+  max-width: 800px;
+  margin: 0px auto;
 }
 
 .column {
