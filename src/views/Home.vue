@@ -6,12 +6,12 @@
           <div id="slider-selectors">
             <div id="columns-selector">
               <div class="mt-2">Columns: {{ numOfColumns}} </div>
-              <b-form-input id="range-1" v-model="numOfColumns" type="range" min="10" max="200" @change="createColumns"></b-form-input>
+              <b-form-input :disabled="isSorting" id="range-1" v-model="numOfColumns" type="range" min="10" max="200" @change="createColumns"></b-form-input>
             </div>
             <div id="selectors-spacing"></div>
             <div id="speed-selector">
               <div class="mt-2">Speed: {{ timeInterval }}ms </div>
-              <b-form-input id="range-2" v-model="timeInterval" type="range" min="1" max="100"></b-form-input>
+              <b-form-input :disabled="isSorting" id="range-2" v-model="timeInterval" type="range" min="1" max="100"></b-form-input>
             </div>
           </div>
           <!-- <div>
@@ -91,6 +91,7 @@ export default {
         { value: 'Insertion', text: 'Insertion' },
         { value: 'Cocktail', text: 'Cocktail' },
       ],
+      isSorting: false,
       numOfColumns: 50,
       containerSize: 800,
       widthOfColumns: 0,
@@ -124,6 +125,7 @@ export default {
       this.createColumns();
     },
     createColumns() {
+      this.isSorting = false;
       this.columns = [];
       for (var i = 0; i < this.numOfColumns; i++) {
         var elem = { key: i, height: this.randomNumberBetween(10, this.window.height - 330) }
@@ -132,6 +134,7 @@ export default {
       this.widthOfColumns = Math.ceil(this.window.width / this.numOfColumns);
     },
     sortColumns() {
+      this.isSorting = true
       if(this.sortType === 'Bubble') {
         this.bubbleSort(this.columns)
       } else if(this.sortType === 'Insertion') {
@@ -225,7 +228,7 @@ export default {
 }
 
 #columns-selector {
-  width: 60%;
+  width: 70%;
 }
 
 #selectors-spacing {
@@ -233,7 +236,7 @@ export default {
 }
 
 #speed-selectors {
-  width: 30%;
+  width: 20%;
 }
 
 #slider-selectors {
