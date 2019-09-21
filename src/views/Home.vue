@@ -1,47 +1,48 @@
 <template>
   <div class="home">
-    <div>
-      <range-slider
-        class="slider"
-        min="1"
-        max="250"
-        step="1"
-        v-model="numOfColumns"
-        @input="changeWidthOfColumns()"
-      ></range-slider>
-    </div>
-    <div>Num of Columns: {{ numOfColumns }}</div>
-    <div>
-      <button @click="createColumns()">Create New Columns</button>
-    </div>
-    <div>
-      <button @click="sortColumns()">Sort Columns</button>
-    </div>
-    <select v-model="sortType">
-      <option>Bubble</option>
-      <option>Insertion</option>
-      <option>Cocktail</option>
-    </select>
-    <div>
-      <range-slider
-        class="slider"
-        min="1"
-        max="100"
-        step="1"
-        v-model="timeInterval"
-      ></range-slider>
-    </div>
-    <div class="row">
-      <div class="column-container" v-for="column in columns" :key="column.key">
-          <div v-if="selectedCol===column"
-               class="column selected"
-               :style="divDimensions(widthOfColumns, column.changeHeight)"
-          >
-          </div>
-          <div v-else 
-               class="column"
-               :style="divDimensions(widthOfColumns, column.height)">
-          </div>
+    <div id="home-container">
+      <div id="selectors">
+        <div>
+          <div>Num of Columns: {{ numOfColumns }}</div>
+          <range-slider
+            class="slider"
+            min="1"
+            max="250"
+            step="1"
+            v-model="numOfColumns"
+            @input="changeWidthOfColumns()"
+          ></range-slider>
+        </div>
+        <div>
+          <div>Time Interval: {{ timeInterval }}ms</div>
+          <range-slider
+            class="slider"
+            min="1"
+            max="100"
+            step="1"
+            v-model="timeInterval"
+          ></range-slider>
+        </div>
+        <b-form-select v-model="sortType" :options="sortTypes"></b-form-select>
+        <div>
+          <b-button @click="sortColumns()">Sort Columns</b-button>
+        </div>
+        <div>
+          <b-button @click="createColumns()">Create New Columns</b-button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="column-container" v-for="column in columns" :key="column.key">
+            <div v-if="selectedCol===column"
+                class="column selected"
+                :style="divDimensions(widthOfColumns, column.changeHeight)"
+            >
+            </div>
+            <div v-else 
+                class="column"
+                :style="divDimensions(widthOfColumns, column.height)">
+            </div>
+        </div>
       </div>
     </div>
   </div>
@@ -62,6 +63,11 @@ export default {
   },
   data() {
     return {
+      sortTypes: [
+        'Bubble',
+        'Insertion',
+        'Cocktail',
+      ],
       numOfColumns: 100,
       containerSize: 800,
       widthOfColumns: '',
@@ -160,7 +166,7 @@ export default {
         left++;
       }
     },
-    getRandomColor() {  
+    getRandomColor() {
       var letters = '0123456789ABCDEF';
       var color = '#';
       for (var i = 0; i < 6; i++) {
@@ -179,12 +185,26 @@ export default {
   display: flex;
 }
 
+.home {
+  margin-top: 50px;
+}
+
+#selectors {
+  background: black;
+  margin: 0px auto 50px auto;
+  padding: 20px;
+}
+
 .selected {
   background: red !important;
 }
 
+#home-container {
+  max-width: 800px;
+  margin: 0px auto;
+}
+
 .column-container {
-  /* position: relative; */
 }
 
 .column {
