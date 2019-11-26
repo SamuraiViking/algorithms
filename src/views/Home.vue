@@ -14,27 +14,6 @@
               <b-form-input :disabled="isSorting" id="range-2" v-model="timeInterval" type="range" min="1" max="100"></b-form-input>
             </div>
           </div>
-          <!-- <div>
-            <div>Number of Columns: {{ numOfColumns }}</div>
-            <range-slider
-              class="slider"
-              min="1"
-              max="200"
-              step="1"
-              v-model="numOfColumns"
-              @input="changeWidthOfColumns()"
-            ></range-slider>
-          </div>
-          <div>
-            <div>Time Interval: {{ timeInterval }}ms</div>
-            <range-slider
-              class="slider"
-              min="1"
-              max="100"
-              step="1"
-              v-model="timeInterval"
-            ></range-slider>
-          </div> -->
           <div>
             <b-form-select v-model="sortType" :options="sortTypes"></b-form-select>
           </div>
@@ -86,7 +65,7 @@ export default {
         height: 0,
       },
       sortTypes: [
-        { value: null, text: '-- Select a Sorting Algorithm --' },
+        // { value: null, text: '-- Select a Sorting Algorithm --' },
         { value: 'Bubble', text: 'Bubble' },
         { value: 'Insertion', text: 'Insertion' },
         { value: 'Cocktail', text: 'Cocktail' },
@@ -97,7 +76,7 @@ export default {
       widthOfColumns: 0,
       timeInterval: 1,
       selectedCol: '',
-      sortType: null,
+      sortType: 'Insertion',
       columns: []
     };
   },
